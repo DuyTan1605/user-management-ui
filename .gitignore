@@ -1,0 +1,81 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+
+# dependencies
+/node_modules
+
+# profiling files
+chrome-profiler-events*.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Plugins
+/src/assets/plugins/**/*.html
+/src/assets/plugins/**/*.less
+/src/assets/plugins/**/*.md
+/src/assets/plugins/**/*.scss
+/src/assets/plugins/**/*.ts
+/src/assets/plugins/**/bower.json
+/src/assets/plugins/**/package.json
+/src/assets/plugins/**/webpack.config.js
+/src/assets/plugins/**/demo/
+/src/assets/plugins/**/demos/
+/src/assets/plugins/**/dev/
+/src/assets/plugins/**/example/
+/src/assets/plugins/**/examples/
+/src/assets/plugins/**/less/
+/src/assets/plugins/**/test/
+/src/assets/plugins/**/tests/
+/src/assets/plugins/daterangepicker/website/
+/src/assets/plugins/daterangepicker/drp.png
+/src/assets/plugins/daterangepicker/moment.min.js
+/src/assets/plugins/daterangepicker/package.js
+/src/assets/plugins/daterangepicker/website.css
+/src/assets/plugins/daterangepicker/website.js
+/src/assets/plugins/jquery-ui/AUTHORS.txt
+/src/assets/plugins/jquery-ui/external/jquery/jquery.js
+/src/assets/plugins/inputmask/bindings/
+/src/assets/plugins/flot/src/plugins/jquery*.js
+!/src/assets/plugins/flot/src/plugins/jquery.flot.*.js
+!/src/assets/plugins/**/LICENSE.md
+!/src/assets/plugins/**/LICENSE.txt
+!/src/assets/plugins/**/license.md
+!/src/assets/plugins/**/license.txt
+!/src/assets/plugins/**/LICENSE
+!/src/assets/plugins/**/license
+!/src/assets/plugins/**/COPYING

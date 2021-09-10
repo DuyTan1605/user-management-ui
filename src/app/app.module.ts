@@ -6,13 +6,18 @@ import { AppComponent } from './app.component';
 import { UsersComponent } from './pages/users/users.component';
 import { UserComponent } from './pages/user/user.component';
 import { HttpClientModule } from '@angular/common/http';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { NavbarComponent } from './components/layout/navbar/navbar.component';
+import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { MenuComponent } from './components/menu/menu.component';
-import { ContentHeaderComponent } from './components/content-header/content-header.component';
-
+import { FooterComponent } from './components/layout/footer/footer.component';
+import { MenuComponent } from './components/layout/menu/menu.component';
+import { ContentHeaderComponent } from './components/layout/content-header/content-header.component';
+import { DeleteModalComponent } from './components/modals/delete-modal/delete-modal.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NewUserModalComponent } from '../app/components/modals/new-user-modal/new-user-modal.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,14 +28,21 @@ import { ContentHeaderComponent } from './components/content-header/content-head
     DashboardComponent,
     FooterComponent,
     MenuComponent,
-    ContentHeaderComponent
+    ContentHeaderComponent,
+    DeleteModalComponent,
+    NewUserModalComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    NgbModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

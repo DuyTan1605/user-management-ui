@@ -1,8 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { User } from '../../types/user';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService/user.service';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { formatToMyDate } from '../../utils/formatDateTime';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  FormBuilder,
+} from '@angular/forms';
+import { validateUserName, validateName } from '../../utils/validators';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -10,11 +19,14 @@ import { UserService } from '../../services/userService/user.service';
 })
 export class UserComponent implements OnInit {
   @Input() user?: User;
-
+  model?: NgbDateStruct;
+  editUser!: FormGroup;
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private location: Location
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -22,6 +34,57 @@ export class UserComponent implements OnInit {
   }
   getUser(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userService.getUser(id).subscribe((user) => (this.user = user));
+    this.userService.getUser(id).subscribe((user) => {
+      const myDate = new Date(user.birthday.toString());
+      this.user = user;
+
+      this.editUser = this.formBuilder.group({
+        username: new FormControl(user.userName, [
+          Validators.required,
+          validateUserName,
+        ]),
+        name: new FormControl(user.name, [Validators.required, validateName]),
+        birthday: new FormControl(
+          {
+            year: myDate.getFullYear(),
+            month: myDate.getMonth() + 1,
+            day: myDate.getDate(),
+          },
+          [Validators.required]
+        ),
+        gender: new FormControl(user.gender, [Validators.required]),
+      });
+    });
+  }
+
+  formatDate(date: String): String {
+    return formatToMyDate(date);
+  }
+
+  backToUsers() {
+    this.router.navigate(['/users']);
+  }
+
+  onSubmit() {
+    this.userService
+      .updateUser({
+        ...this.editUser.value,
+        gender: this.editUser.value == 'Male' ? 1 : 0,
+        id: Number(this.route.snapshot.paramMap.get('id')),
+        birthday:
+          this.editUser.value.birthday.year +
+          '-' +
+          this.editUser.value.birthday.month +
+          '-' +
+          this.editUser.value.birthday.day +
+          ' 00:00:00',
+      })
+      .subscribe((result) => {
+        if (result && result.code == 0) {
+          this.toastr.success('Update user success!');
+        } else {
+          this.toastr.error('Update user fail!');
+        }
+      });
   }
 }

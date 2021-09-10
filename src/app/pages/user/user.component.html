@@ -1,4 +1,159 @@
+<button class="btn btn-text" (click)="backToUsers()">
+  <i class="fa fa-angle-left ml-1" style="font-size: 2vw"></i>
+</button>
 <div *ngIf="user">
-  <p>ID: {{ user.id }}</p>
-  <p>Name:{{ user.name }}</p>
+  <form (ngSubmit)="onSubmit()" [formGroup]="editUser">
+    <div class="card-body row">
+      <div class="form-group col-md-6">
+        <label for="inputName">ID</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputName"
+          placeholder="Name"
+          value="{{ user.id }}"
+          disabled
+        />
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="inputUserName">User name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputUserName"
+          placeholder="User name"
+          formControlName="username"
+          name="userName"
+        />
+        <div
+          *ngIf="
+            editUser.get('username')?.touched || editUser.get('username')?.dirty
+          "
+        >
+          <div *ngIf="editUser.get('username')?.errors?.required">
+            User name is required
+          </div>
+          <div *ngIf="editUser.get('username')?.errors?.userNameInvalid">
+            User name must have 5-29 characters(numbers and alphabe letters)
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="inputName">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputName"
+          placeholder="Name"
+          formControlName="name"
+          name="name"
+        />
+        <div
+          *ngIf="editUser.get('name')?.touched || editUser.get('name')?.dirty"
+        >
+          <div *ngIf="editUser.get('name')?.errors?.required">
+            Name is required
+          </div>
+          <div *ngIf="editUser.get('name')?.errors?.nameInvalid">
+            Name must have 5-29 characters(alphabe letters)
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Gender</label>
+        <select
+          class="form-control form-select"
+          formControlName="gender"
+          name="gender"
+          ngDefaultControl="gender"
+        >
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <div
+          *ngIf="
+            editUser.get('gender')?.touched || editUser.get('gender')?.dirty
+          "
+        >
+          <div *ngIf="editUser.get('gender')?.errors?.required">
+            Gender is required
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Birthday</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="birthday"
+            formControlName="birthday"
+            ngbDatepicker
+            #d="ngbDatepicker"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary calendar"
+              (click)="d.toggle()"
+              type="button"
+            >
+              <i class="fas fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+        <div
+          *ngIf="
+            editUser.get('birthday')?.touched || editUser.get('birthday')?.dirty
+          "
+        >
+          <div *ngIf="editUser.get('birthday')?.errors?.required">
+            Birthday is required
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Create time</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="inputCreateTime"
+            placeholder="Create time"
+            disabled
+            value="{{ formatDate(user.createTime) }}"
+          />
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Update time</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="inputUpdateTime"
+            placeholder="Update time"
+            disabled
+            value="{{ formatDate(user.updateTime) }}"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="editUser.invalid || !editUser.dirty"
+      >
+        Change
+      </button>
+    </div>
+  </form>
 </div>

@@ -3,32 +3,61 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../../types/user';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-
+import { environment } from '../../../environments/environment.dev';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    headers: new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }),
   };
-  private apiUrl = "http://localhost:8080";
+  private apiUrl = environment.apiUrl;
   private usersUrl = '/users';
-  private userUrl = "/user";
+  private userUrl = '/user';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<any>(this.apiUrl+this.usersUrl).pipe(
+    return this.http.get<any>(this.apiUrl + this.usersUrl).pipe(
       map((res) => res.data),
       catchError(this.handleError<User[]>('getUsers', []))
     );
   }
 
-  getUser(id:number):Observable<User>{
-    return this.http.get<any>(this.apiUrl+this.userUrl+"?id="+id).pipe(
+  getUser(id: number): Observable<User> {
+    return this.http.get<any>(this.apiUrl + this.userUrl + '?id=' + id).pipe(
       map((res) => res.data),
       catchError(this.handleError<User>('getUser', undefined))
     );
+  }
+
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete<any>(this.apiUrl + this.userUrl + '?id=' + id).pipe(
+      map((res) => res),
+      catchError(this.handleError<User>('getUser', undefined))
+    );
+  }
+
+  createUser(newUserData: any): Observable<any> {
+    return this.http
+      .post<any>(this.apiUrl + this.userUrl, newUserData, this.httpOptions)
+      .pipe(
+        map((res) => res),
+        catchError(this.handleError<User>('getUser', undefined))
+      );
+  }
+
+  updateUser(newUserData: any): Observable<any> {
+    return this.http
+      .put<any>(this.apiUrl + this.userUrl, newUserData, this.httpOptions)
+      .pipe(
+        map((res) => res),
+        catchError(this.handleError<User>('getUser', undefined))
+      );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

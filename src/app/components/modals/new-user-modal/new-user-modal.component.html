@@ -1,0 +1,177 @@
+<!-- <div class="modal fade" id="modal-create-user"> -->
+  <!-- <div class="modal-dialog modal-xl"> -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">New user</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="closeModal.emit()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onSubmit()" [formGroup]="createNewUser">
+          <div class="card-body row">
+            <div class="form-group col-md-6">
+              <label for="inputUserName">User name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="inputUserName"
+                placeholder="User name"
+                formControlName="username"
+                name="username"
+              />
+              <div
+                *ngIf="
+                  createNewUser.get('username')?.touched ||
+                  createNewUser.get('username')?.dirty
+                "
+              >
+                <div *ngIf="createNewUser.get('username')?.errors?.required">
+                  User name is required
+                </div>
+                <div
+                  *ngIf="createNewUser.get('username')?.errors?.userNameInvalid"
+                >
+                  User name must have 5-29 characters(numbers and alphabe
+                  letters)
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="inputName">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="inputName"
+                placeholder="Name"
+                formControlName="name"
+                name="name"
+              />
+              <div
+                *ngIf="
+                  createNewUser.get('name')?.touched ||
+                  createNewUser.get('name')?.dirty
+                "
+              >
+                <div *ngIf="createNewUser.get('name')?.errors?.required">
+                  Name is required
+                </div>
+                <div *ngIf="createNewUser.get('name')?.errors?.nameInvalid">
+                  Name must have 5-29 characters(alphabe letters)
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="inputName">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                placeholder="Password"
+                formControlName="password"
+                name="password"
+              />
+              <div
+                *ngIf="
+                  createNewUser.get('password')?.touched ||
+                  createNewUser.get('password')?.dirty
+                "
+              >
+                <div *ngIf="createNewUser.get('password')?.errors?.required">
+                  Password is required
+                </div>
+                <div
+                  *ngIf="createNewUser.get('password')?.errors?.passwordInvalid"
+                >
+                  Password must have 8-20 characters(contains upper
+                  letters,lower letters ,number and especial characters)
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label>Gender</label>
+              <select
+                class="form-control form-select"
+                formControlName="gender"
+                name="gender"
+                ngDefaultControl="gender"
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <div
+                *ngIf="
+                  createNewUser.get('gender')?.touched ||
+                  createNewUser.get('gender')?.dirty
+                "
+              >
+                <div *ngIf="createNewUser.get('gender')?.errors?.required">
+                  Gender is required
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label>Birthday</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="birthday"
+                  formControlName="birthday"
+                  ngbDatepicker
+                  #d="ngbDatepicker"
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-secondary calendar"
+                    (click)="d.toggle()"
+                    type="button"
+                  >
+                    <i class="fas fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  createNewUser.get('birthday')?.touched ||
+                  createNewUser.get('birthday')?.dirty
+                "
+              >
+                <div *ngIf="createNewUser.get('birthday')?.errors?.required">
+                  Birthday is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-body -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+              (click)="closeModal.emit()"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="createNewUser.invalid"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <!-- </div> -->
+<!-- </div> -->

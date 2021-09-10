@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService/user.service';
 import { User } from '../../types/user';
-import { formatToMyDate } from '../../utils/formatDateTime';
+import { formatToMyDate, formatToApiDate } from '../../utils/formatDateTime';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 @Component({
@@ -54,15 +54,13 @@ export class UsersComponent implements OnInit {
     this.userService
       .createUser({
         ...data,
-        gender: data == 'Male' ? 1 : 0,
-        birthday:
-          new Date(data.birthday.year, data.birthday.month, data.birthday.day)
-            .toISOString()
-            .slice(0, 10) + ' 00:00:00',
+        gender: data.gender == 'Male' ? 0 : 1,
+        birthday: formatToApiDate(data.birthday),
       })
       .subscribe((result) => {
         if (result && result.code == 0) {
           this.toastr.success('Create user success!');
+          this.getUsers();
         } else {
           this.toastr.error('Create user fail!');
         }

@@ -3,7 +3,7 @@ import { User } from '../../types/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService/user.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { formatToMyDate } from '../../utils/formatDateTime';
+import { formatToMyDate, formatToApiDate } from '../../utils/formatDateTime';
 import {
   FormControl,
   FormGroup,
@@ -69,15 +69,9 @@ export class UserComponent implements OnInit {
     this.userService
       .updateUser({
         ...this.editUser.value,
-        gender: this.editUser.value == 'Male' ? 1 : 0,
+        gender: this.editUser.value.gender == 'Male' ? 0 : 1,
         id: Number(this.route.snapshot.paramMap.get('id')),
-        birthday:
-          this.editUser.value.birthday.year +
-          '-' +
-          this.editUser.value.birthday.month +
-          '-' +
-          this.editUser.value.birthday.day +
-          ' 00:00:00',
+        birthday: formatToApiDate(this.editUser.value.birthday),
       })
       .subscribe((result) => {
         if (result && result.code == 0) {

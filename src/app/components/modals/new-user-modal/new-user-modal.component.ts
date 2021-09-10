@@ -13,7 +13,7 @@ import {
 
 import { UserService } from '../../../services/userService/user.service';
 import { ToastrService } from 'ngx-toastr';
-
+import axios from 'axios';
 @Component({
   selector: 'app-new-user-modal',
   templateUrl: './new-user-modal.component.html',

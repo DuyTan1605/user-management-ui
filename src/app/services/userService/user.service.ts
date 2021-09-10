@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { User } from '../../types/user';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -11,8 +11,7 @@ export class UserService {
   httpOptions = {
     headers: new HttpHeaders({
       Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+      'Content-Type': 'application/x-www-form-urlencoded',
     }),
   };
   private apiUrl = environment.apiUrl;
@@ -43,8 +42,15 @@ export class UserService {
   }
 
   createUser(newUserData: any): Observable<any> {
+    const body = new URLSearchParams();
+    body.set('password', newUserData.password);
+    body.set('name', newUserData.name);
+    body.set('username', newUserData.username);
+    body.set('birthday', newUserData.birthday);
+    body.set('gender', newUserData.gender);
+
     return this.http
-      .post<any>(this.apiUrl + this.userUrl, newUserData, this.httpOptions)
+      .post<any>(this.apiUrl + this.userUrl, body, this.httpOptions)
       .pipe(
         map((res) => res),
         catchError(this.handleError<User>('getUser', undefined))
@@ -52,8 +58,15 @@ export class UserService {
   }
 
   updateUser(newUserData: any): Observable<any> {
+    const body = new URLSearchParams();
+    body.set('id', newUserData.id);
+    body.set('name', newUserData.name);
+    body.set('username', newUserData.username);
+    body.set('birthday', newUserData.birthday);
+    body.set('gender', newUserData.gender);
+
     return this.http
-      .put<any>(this.apiUrl + this.userUrl, newUserData, this.httpOptions)
+      .put<any>(this.apiUrl + this.userUrl, body.toString(), this.httpOptions)
       .pipe(
         map((res) => res),
         catchError(this.handleError<User>('getUser', undefined))

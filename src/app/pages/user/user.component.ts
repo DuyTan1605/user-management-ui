@@ -73,12 +73,6 @@ export class UserComponent implements OnInit {
         id: Number(this.route.snapshot.paramMap.get('id')),
         birthday: formatToApiDate(this.editUser.value.birthday),
       })
-      .subscribe((result) => {
-        if (result && result.code == 0) {
-          this.toastr.success('Update user success!');
-        } else {
-          this.toastr.error('Update user fail!');
-        }
-      });
+      .subscribe();
   }
 }

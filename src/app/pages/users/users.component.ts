@@ -33,11 +33,8 @@ export class UsersComponent implements OnInit {
 
   deleteUserAction(userId: number): void {
     this.userService.deleteUser(userId).subscribe((result) => {
-      if (result && result.code == 0) {
-        this.toastr.success('Delele user success!');
+      if (result) {
         this.users = this.users.filter((user) => user.id != userId);
-      } else {
-        this.toastr.error('Delele user fail!');
       }
     });
   }
@@ -58,11 +55,8 @@ export class UsersComponent implements OnInit {
         birthday: formatToApiDate(data.birthday),
       })
       .subscribe((result) => {
-        if (result && result.code == 0) {
-          this.toastr.success('Create user success!');
+        if (result) {
           this.getUsers();
-        } else {
-          this.toastr.error('Create user fail!');
         }
       });
   }

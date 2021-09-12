@@ -29,8 +29,6 @@
           <th>Name</th>
           <th>Gender</th>
           <th>Birthday</th>
-          <th>Create time</th>
-          <th>Update time</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -47,8 +45,6 @@
             {{ user.gender }}
           </td>
           <td>{{ formatDate(user.birthday) }}</td>
-          <td>{{ user.createTime }}</td>
-          <td>{{ user.updateTime }}</td>
           <td>
             <button class="btn">
               <a href="user/{{ user.id }}" class="text-muted">

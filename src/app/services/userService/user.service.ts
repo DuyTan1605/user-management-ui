@@ -4,6 +4,8 @@ import { User } from '../../types/user';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment.dev';
+import { ToastrService } from 'ngx-toastr';
+import { getErrorMsg } from '../../utils/handleErrors';
 @Injectable({
   providedIn: 'root',
 })
@@ -18,27 +20,64 @@ export class UserService {
   private usersUrl = '/users';
   private userUrl = '/user';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<any>(this.apiUrl + this.usersUrl).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<User[]>('getUsers', []))
-    );
+    return this.http
+      .get<any>(this.apiUrl + this.usersUrl, { observe: 'response' })
+      .pipe(
+        map((response) => {
+          if (
+            response.status == 200 &&
+            response.body.code == 0 &&
+            response.body.data
+          ) {
+            return response.body.data;
+          }
+          this.toastr.error('Get list fail', getErrorMsg(response));
+          return [];
+        }),
+        catchError(this.handleError<User[]>('getUsers', []))
+      );
   }
 
   getUser(id: number): Observable<User> {
-    return this.http.get<any>(this.apiUrl + this.userUrl + '?id=' + id).pipe(
-      map((res) => res.data),
-      catchError(this.handleError<User>('getUser', undefined))
-    );
+    return this.http
+      .get<any>(this.apiUrl + this.userUrl + '?id=' + id, {
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          if (
+            response.status == 200 &&
+            response.body.code == 0 &&
+            response.body.data
+          ) {
+            return response.body.data;
+          }
+          this.toastr.error('Get user fail', getErrorMsg(response));
+          return [];
+        }),
+        catchError(this.handleError<User>('getUser', undefined))
+      );
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete<any>(this.apiUrl + this.userUrl + '?id=' + id).pipe(
-      map((res) => res),
-      catchError(this.handleError<User>('getUser', undefined))
-    );
+    return this.http
+      .delete<any>(this.apiUrl + this.userUrl + '?id=' + id, {
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          if (response.status == 200 && response.body.code == 0) {
+            this.toastr.success('Delele user success!');
+            return 1;
+          }
+          this.toastr.error('Delete user fail', getErrorMsg(response));
+          return 0;
+        }),
+        catchError(this.handleError<User>('getUser', undefined))
+      );
   }
 
   createUser(newUserData: any): Observable<any> {
@@ -50,9 +89,19 @@ export class UserService {
     body.set('gender', newUserData.gender);
 
     return this.http
-      .post<any>(this.apiUrl + this.userUrl, body, this.httpOptions)
+      .post<any>(this.apiUrl + this.userUrl, body, {
+        ...this.httpOptions,
+        observe: 'response',
+      })
       .pipe(
-        map((res) => res),
+        map((response) => {
+          if (response.status == 200 && response.body.code == 0) {
+            this.toastr.success('Create user success!');
+            return 1;
+          }
+          this.toastr.error('Create user fail', getErrorMsg(response));
+          return 0;
+        }),
         catchError(this.handleError<User>('getUser', undefined))
       );
   }
@@ -66,9 +115,19 @@ export class UserService {
     body.set('gender', newUserData.gender);
 
     return this.http
-      .put<any>(this.apiUrl + this.userUrl, body.toString(), this.httpOptions)
+      .put<any>(this.apiUrl + this.userUrl, body.toString(), {
+        ...this.httpOptions,
+        observe: 'response',
+      })
       .pipe(
-        map((res) => res),
+        map((response) => {
+          if (response.status == 200 && response.body.code == 0) {
+            this.toastr.success('Update user success!');
+            return 1;
+          }
+          this.toastr.error('Update user fail', getErrorMsg(response));
+          return 0;
+        }),
         catchError(this.handleError<User>('getUser', undefined))
       );
   }
@@ -77,7 +136,7 @@ export class UserService {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
-
+      this.toastr.error(getErrorMsg(error));
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
 

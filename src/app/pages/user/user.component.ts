@@ -3,20 +3,21 @@ import { User } from '../../types/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService/user.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { formatToMyDate, formatToApiDate } from '../../utils/formatDateTime';
+import { DateTimeFormater } from '../../utils/datetime-formatter';
 import {
   FormControl,
   FormGroup,
   Validators,
   FormBuilder,
 } from '@angular/forms';
-import { validateUserName, validateName } from '../../utils/validators';
+import { Validator } from '../../utils/validators';
 import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
+
 export class UserComponent implements OnInit {
   @Input() user?: User;
   model?: NgbDateStruct;
@@ -26,7 +27,9 @@ export class UserComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private dateTimeService: DateTimeFormater,
+    private validatorService: Validator
   ) {}
 
   ngOnInit(): void {
@@ -41,9 +44,12 @@ export class UserComponent implements OnInit {
       this.editUser = this.formBuilder.group({
         username: new FormControl(user.userName, [
           Validators.required,
-          validateUserName,
+          this.validatorService.validateUserName,
         ]),
-        name: new FormControl(user.name, [Validators.required, validateName]),
+        name: new FormControl(user.name, [
+          Validators.required,
+          this.validatorService.validateName,
+        ]),
         birthday: new FormControl(
           {
             year: myDate.getFullYear(),
@@ -58,7 +64,7 @@ export class UserComponent implements OnInit {
   }
 
   formatDate(date: String): String {
-    return formatToMyDate(date);
+    return this.dateTimeService.formatToMyDate(date);
   }
 
   backToUsers() {
@@ -71,7 +77,9 @@ export class UserComponent implements OnInit {
         ...this.editUser.value,
         gender: this.editUser.value.gender == 'Male' ? 0 : 1,
         id: Number(this.route.snapshot.paramMap.get('id')),
-        birthday: formatToApiDate(this.editUser.value.birthday),
+        birthday: this.dateTimeService.formatToApiDate(
+          this.editUser.value.birthday
+        ),
       })
       .subscribe();
   }

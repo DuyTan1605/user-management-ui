@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService/user.service';
 import { User } from '../../types/user';
-import { formatToMyDate, formatToApiDate } from '../../utils/formatDateTime';
+import { DateTimeFormater } from '../../utils/datetime-formatter';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 @Component({
@@ -17,7 +17,8 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private toastr: ToastrService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private dateTimeService: DateTimeFormater
   ) {}
 
   ngOnInit(): void {
@@ -28,7 +29,7 @@ export class UsersComponent implements OnInit {
   }
 
   formatDate(date: String): String {
-    return formatToMyDate(date);
+    return this.dateTimeService.formatToMyDate(date);
   }
 
   deleteUserAction(userId: number): void {
@@ -52,7 +53,7 @@ export class UsersComponent implements OnInit {
       .createUser({
         ...data,
         gender: data.gender == 'Male' ? 0 : 1,
-        birthday: formatToApiDate(data.birthday),
+        birthday: this.dateTimeService.formatToApiDate(data.birthday),
       })
       .subscribe((result) => {
         if (result) {

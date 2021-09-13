@@ -1,41 +1,42 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { User } from '../../types/user';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment.dev';
 import { ToastrService } from 'ngx-toastr';
-import { getErrorMsg } from '../../utils/handleErrors';
+import { ErrorHandler } from '../../utils/error-handlers';
+import { apiResponse } from '../../types/apiResponse';
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }),
-  };
+  private headers = new HttpHeaders({
+    Accept: 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+  });
+
   private apiUrl = environment.apiUrl;
   private usersUrl = '/users';
   private userUrl = '/user';
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private http: HttpClient,
+    private toastr: ToastrService,
+    private ErrorHandler: ErrorHandler
+  ) {}
 
   getUsers(): Observable<User[]> {
     return this.http
       .get<any>(this.apiUrl + this.usersUrl, { observe: 'response' })
       .pipe(
         map((response) => {
-          if (
-            response.status == 200 &&
-            response.body.code == 0 &&
-            response.body.data
-          ) {
-            return response.body.data;
-          }
-          this.toastr.error('Get list fail', getErrorMsg(response));
-          return [];
+          return response.body.data;
         }),
         catchError(this.handleError<User[]>('getUsers', []))
       );
@@ -48,17 +49,9 @@ export class UserService {
       })
       .pipe(
         map((response) => {
-          if (
-            response.status == 200 &&
-            response.body.code == 0 &&
-            response.body.data
-          ) {
-            return response.body.data;
-          }
-          this.toastr.error('Get user fail', getErrorMsg(response));
-          return [];
+          return response.body.data;
         }),
-        catchError(this.handleError<User>('getUser', undefined))
+        catchError(this.handleError<User>('getUser'))
       );
   }
 
@@ -69,66 +62,75 @@ export class UserService {
       })
       .pipe(
         map((response) => {
-          if (response.status == 200 && response.body.code == 0) {
-            this.toastr.success('Delele user success!');
-            return 1;
+          if (response.body.code != 0) {
+            this.toastr.error(
+              'Delete user fail',
+              this.ErrorHandler.getErrorMsg(response)
+            );
+            return 0;
           }
-          this.toastr.error('Delete user fail', getErrorMsg(response));
-          return 0;
+          this.toastr.success('Delele user success!');
+          return 1;
         }),
-        catchError(this.handleError<User>('getUser', undefined))
+        catchError(this.handleError<User>('deleteUser'))
       );
   }
 
   createUser(newUserData: any): Observable<any> {
-    const body = new URLSearchParams();
-    body.set('password', newUserData.password);
-    body.set('name', newUserData.name);
-    body.set('username', newUserData.username);
-    body.set('birthday', newUserData.birthday);
-    body.set('gender', newUserData.gender);
+    const body = new HttpParams()
+      .set('password', newUserData.password)
+      .set('name', newUserData.name)
+      .set('username', newUserData.username)
+      .set('birthday', newUserData.birthday)
+      .set('gender', newUserData.gender);
 
     return this.http
       .post<any>(this.apiUrl + this.userUrl, body, {
-        ...this.httpOptions,
+        headers: this.headers,
         observe: 'response',
       })
       .pipe(
         map((response) => {
-          if (response.status == 200 && response.body.code == 0) {
-            this.toastr.success('Create user success!');
-            return 1;
+          if (response.body.code != 0) {
+            this.toastr.error(
+              'Create user fail',
+              this.ErrorHandler.getErrorMsg(response)
+            );
+            return 0;
           }
-          this.toastr.error('Create user fail', getErrorMsg(response));
-          return 0;
+          this.toastr.success('Create user success!');
+          return 1;
         }),
-        catchError(this.handleError<User>('getUser', undefined))
+        catchError(this.handleError<User>('createUser'))
       );
   }
 
   updateUser(newUserData: any): Observable<any> {
-    const body = new URLSearchParams();
-    body.set('id', newUserData.id);
-    body.set('name', newUserData.name);
-    body.set('username', newUserData.username);
-    body.set('birthday', newUserData.birthday);
-    body.set('gender', newUserData.gender);
+    const params = new HttpParams()
+      .set('id', newUserData.id)
+      .set('name', newUserData.name)
+      .set('username', newUserData.username)
+      .set('birthday', newUserData.birthday)
+      .set('gender', newUserData.gender);
 
     return this.http
-      .put<any>(this.apiUrl + this.userUrl, body.toString(), {
-        ...this.httpOptions,
+      .put<any>(this.apiUrl + this.userUrl, params, {
+        headers: this.headers,
         observe: 'response',
       })
       .pipe(
         map((response) => {
-          if (response.status == 200 && response.body.code == 0) {
-            this.toastr.success('Update user success!');
-            return 1;
+          if (response.body.code != 0) {
+            this.toastr.error(
+              'Update user fail',
+              this.ErrorHandler.getErrorMsg(response)
+            );
+            return 0;
           }
-          this.toastr.error('Update user fail', getErrorMsg(response));
-          return 0;
+          this.toastr.success('Update user success!');
+          return 1;
         }),
-        catchError(this.handleError<User>('getUser', undefined))
+        catchError(this.handleError<User>('updateUser'))
       );
   }
 
@@ -136,7 +138,7 @@ export class UserService {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
-      this.toastr.error(getErrorMsg(error));
+      this.toastr.error(this.ErrorHandler.getErrorMsg(error));
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
 

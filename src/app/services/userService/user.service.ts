@@ -37,8 +37,7 @@ export class UserService {
       .pipe(
         map((response) => {
           return response.body.data;
-        }),
-        catchError(this.handleError<User[]>('getUsers', []))
+        })
       );
   }
 
@@ -50,8 +49,7 @@ export class UserService {
       .pipe(
         map((response) => {
           return response.body.data;
-        }),
-        catchError(this.handleError<User>('getUser'))
+        })
       );
   }
 
@@ -71,8 +69,7 @@ export class UserService {
           }
           this.toastr.success('Delele user success!');
           return 1;
-        }),
-        catchError(this.handleError<User>('deleteUser'))
+        })
       );
   }
 
@@ -100,8 +97,7 @@ export class UserService {
           }
           this.toastr.success('Create user success!');
           return 1;
-        }),
-        catchError(this.handleError<User>('createUser'))
+        })
       );
   }
 
@@ -129,21 +125,20 @@ export class UserService {
           }
           this.toastr.success('Update user success!');
           return 1;
-        }),
-        catchError(this.handleError<User>('updateUser'))
+        })
       );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-      this.toastr.error(this.ErrorHandler.getErrorMsg(error));
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
+  // private handleError<T>(operation = 'operation', result?: T) {
+  //   return (error: any): Observable<T> => {
+  //     // TODO: send the error to remote logging infrastructure
+  //     console.error(error); // log to console instead
+  //     this.toastr.error(this.ErrorHandler.getErrorMsg(error));
+  //     // TODO: better job of transforming error for user consumption
+  //     console.log(`${operation} failed: ${error.message}`);
 
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
+  //     // Let the app keep running by returning an empty result.
+  //     return of(result as T);
+  //   };
+  // }
 }

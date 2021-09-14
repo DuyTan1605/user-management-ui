@@ -25,7 +25,6 @@ export class ResponseInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
-      // Retry on failure
       retry(2),
       map((event: HttpEvent<any>): any => {
         if (event instanceof HttpResponse) {
@@ -36,13 +35,11 @@ export class ResponseInterceptor implements HttpInterceptor {
           return event;
         }
       }),
-      // Handle errors
       catchError((error: HttpErrorResponse) => {
-        // TODO: Add error handling logic here
+        console.log(error);
+        this.toastr.error(this.ErrorHandler.getErrorMsg(error));
         return throwError(error);
       }),
-
-      // PROFILING
       finalize(() => {
         const profilingMsg = `${req.method} "${req.urlWithParams}"`;
         console.log(profilingMsg);

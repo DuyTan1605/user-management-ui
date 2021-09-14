@@ -19,7 +19,7 @@ import { NewUserModalComponent } from '../app/components/modals/new-user-modal/n
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ErrorHandlerInterceptor } from './interceptors/ErrorHandlerInterceptor';
+import { ErrorHandlerInterceptor } from './interceptors/error-interceptor';
 
 @NgModule({
   declarations: [

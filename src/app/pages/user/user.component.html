@@ -6,31 +6,14 @@
     <div class="card-body row">
       <div class="form-group col-md-6">
         <label for="inputName">ID</label>
-        <input
-          type="text"
-          class="form-control"
-          id="inputName"
-          placeholder="Name"
-          value="{{ user.id }}"
-          disabled
-        />
+        <input type="text" class="form-control" id="inputName" placeholder="Name" value="{{ user.id }}" disabled />
       </div>
 
       <div class="form-group col-md-6">
         <label for="inputUserName">User name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="inputUserName"
-          placeholder="User name"
-          formControlName="username"
-          name="userName"
-        />
-        <div
-          *ngIf="
-            editUser.get('username')?.touched || editUser.get('username')?.dirty
-          "
-        >
+        <input type="text" class="form-control" id="inputUserName" placeholder="User name" formControlName="username"
+          name="userName" />
+        <div *ngIf="editUser.get('username')?.touched || editUser.get('username')?.dirty">
           <div *ngIf="editUser.get('username')?.errors?.required">
             User name is required
           </div>
@@ -42,17 +25,8 @@
 
       <div class="form-group col-md-6">
         <label for="inputName">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="inputName"
-          placeholder="Name"
-          formControlName="name"
-          name="name"
-        />
-        <div
-          *ngIf="editUser.get('name')?.touched || editUser.get('name')?.dirty"
-        >
+        <input type="text" class="form-control" id="inputName" placeholder="Name" formControlName="name" name="name" />
+        <div *ngIf="editUser.get('name')?.touched || editUser.get('name')?.dirty">
           <div *ngIf="editUser.get('name')?.errors?.required">
             Name is required
           </div>
@@ -64,20 +38,11 @@
 
       <div class="form-group col-md-6">
         <label>Gender</label>
-        <select
-          class="form-control form-select"
-          formControlName="gender"
-          name="gender"
-          ngDefaultControl="gender"
-        >
+        <select class="form-control form-select" formControlName="gender" name="gender" ngDefaultControl="gender">
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
-        <div
-          *ngIf="
-            editUser.get('gender')?.touched || editUser.get('gender')?.dirty
-          "
-        >
+        <div *ngIf="editUser.get('gender')?.touched || editUser.get('gender')?.dirty">
           <div *ngIf="editUser.get('gender')?.errors?.required">
             Gender is required
           </div>
@@ -87,29 +52,15 @@
       <div class="form-group col-md-6">
         <label>Birthday</label>
         <div class="input-group">
-          <input
-            class="form-control"
-            placeholder="yyyy-mm-dd"
-            name="birthday"
-            formControlName="birthday"
-            ngbDatepicker
-            #d="ngbDatepicker"
-          />
+          <input class="form-control" placeholder="yyyy-mm-dd" name="birthday" formControlName="birthday" ngbDatepicker
+            #d="ngbDatepicker" />
           <div class="input-group-append">
-            <button
-              class="btn btn-outline-secondary calendar"
-              (click)="d.toggle()"
-              type="button"
-            >
+            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
               <i class="fas fa-calendar"></i>
             </button>
           </div>
         </div>
-        <div
-          *ngIf="
-            editUser.get('birthday')?.touched || editUser.get('birthday')?.dirty
-          "
-        >
+        <div *ngIf="editUser.get('birthday')?.touched || editUser.get('birthday')?.dirty">
           <div *ngIf="editUser.get('birthday')?.errors?.required">
             Birthday is required
           </div>
@@ -119,11 +70,7 @@
     <!-- /.card-body -->
 
     <div class="card-footer">
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="editUser.invalid || !editUser.dirty"
-      >
+      <button type="submit" class="btn btn-primary" [disabled]="editUser.invalid || !editUser.dirty">
         Change
       </button>
     </div>

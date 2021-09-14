@@ -42,30 +42,20 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     return errorMsg;
   }
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
     return next.handle(req).pipe(
-      retry(2),
       map((event: HttpEvent<any>): any => {
         if (event instanceof HttpResponse) {
-          console.log(event);
           const myApiResponse: ApiResponse = event.body;
           if (myApiResponse.code != 0) {
             this.toastr.error(this.getErrorMsg(event));
           }
-          return event;
+          return myApiResponse;
         }
       }),
       catchError((error: HttpErrorResponse) => {
-        console.log(error);
         this.toastr.error(this.getErrorMsg(error));
         return throwError(error);
-      }),
-      finalize(() => {
-        const profilingMsg = `${req.method} "${req.urlWithParams}"`;
-        console.log(profilingMsg);
       })
     );
   }

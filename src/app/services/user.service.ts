@@ -4,7 +4,6 @@ import { User } from '../entities/User';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment.dev';
-import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +18,16 @@ export class UserService {
   private usersUrl = '/users';
   private userUrl = '/user';
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + this.usersUrl).pipe(
-      map((response: any) => {
-        return response.data;
-      })
-    );
+    return this.http
+      .get<User[]>(this.apiUrl + this.usersUrl, { observe: 'events' })
+      .pipe(
+        map((response: any) => {
+          return response?.data;
+        })
+      );
   }
 
   getUser(id: number): Observable<User> {
@@ -34,10 +35,11 @@ export class UserService {
     return this.http
       .get<User>(this.apiUrl + this.userUrl, {
         params,
+        observe: 'events',
       })
       .pipe(
         map((response: any) => {
-          return response.data;
+          return response?.data;
         })
       );
   }
@@ -47,11 +49,11 @@ export class UserService {
     return this.http
       .delete<any>(this.apiUrl + this.userUrl, {
         params,
+        observe: 'events',
       })
       .pipe(
-        map((response) => {
-          this.toastr.success('Delele user success!');
-          return 1;
+        map((response: any) => {
+          return response?.code == 0 ? 1 : 0;
         })
       );
   }
@@ -67,11 +69,11 @@ export class UserService {
     return this.http
       .post<any>(this.apiUrl + this.userUrl, body, {
         headers: this.headers,
+        observe: 'events',
       })
       .pipe(
-        map((response) => {
-          this.toastr.success('Create user success!');
-          return 1;
+        map((response: any) => {
+          return response?.code == 0 ? 1 : 0;
         })
       );
   }
@@ -87,11 +89,11 @@ export class UserService {
     return this.http
       .put<any>(this.apiUrl + this.userUrl, params, {
         headers: this.headers,
+        observe: 'events',
       })
       .pipe(
-        map((response) => {
-          this.toastr.success('Update user success!');
-          return 1;
+        map((response: any) => {
+          return response?.code == 0 ? 1 : 0;
         })
       );
   }

@@ -86,6 +86,10 @@ export class UserComponent implements OnInit {
           this.editUser.value.birthday
         ),
       })
-      .subscribe();
+      .subscribe((result) => {
+        if (result) {
+          this.toastr.success('Update user success!');
+        }
+      });
   }
 }

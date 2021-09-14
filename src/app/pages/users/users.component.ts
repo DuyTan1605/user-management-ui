@@ -4,6 +4,7 @@ import { User } from '../../entities/User';
 import { DateTimeFormater } from '../../utils/datetime-formatter';
 import { Gender } from '../../entities/Gender';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-users',
@@ -18,7 +19,8 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: NgbModal,
-    private dateTimeService: DateTimeFormater
+    private dateTimeService: DateTimeFormater,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -33,9 +35,9 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUserAction(userId: number): void {
-    console.log(userId);
     this.userService.deleteUser(userId).subscribe((result) => {
       if (result) {
+        this.toastr.success('Delele user success!');
         this.users = this.users.filter((user) => user.id != userId);
       }
     });
@@ -59,6 +61,7 @@ export class UsersComponent implements OnInit {
       })
       .subscribe((result) => {
         if (result) {
+          this.toastr.success('Create user success!');
           this.getUsers();
         }
       });

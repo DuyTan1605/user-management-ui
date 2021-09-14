@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/userService/user.service';
-import { User } from '../../types/user';
+import { UserService } from '../../services/user.service';
+import { User } from '../../entities/User';
 import { DateTimeFormater } from '../../utils/datetime-formatter';
-import { ToastrService } from 'ngx-toastr';
+import { Gender } from '../../entities/Gender';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -16,7 +17,6 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private toastr: ToastrService,
     private modalService: NgbModal,
     private dateTimeService: DateTimeFormater
   ) {}
@@ -29,10 +29,11 @@ export class UsersComponent implements OnInit {
   }
 
   formatDate(date: String): String {
-    return this.dateTimeService.formatToMyDate(date);
+    return this.dateTimeService.formatToDisplayDate(date);
   }
 
   deleteUserAction(userId: number): void {
+    console.log(userId);
     this.userService.deleteUser(userId).subscribe((result) => {
       if (result) {
         this.users = this.users.filter((user) => user.id != userId);
@@ -52,7 +53,8 @@ export class UsersComponent implements OnInit {
     this.userService
       .createUser({
         ...data,
-        gender: data.gender == 'Male' ? 0 : 1,
+        gender:
+          data.gender == Gender[Gender.Male] ? Gender.Male : Gender.Female,
         birthday: this.dateTimeService.formatToApiDate(data.birthday),
       })
       .subscribe((result) => {

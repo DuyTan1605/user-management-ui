@@ -19,7 +19,8 @@ import { NewUserModalComponent } from '../app/components/modals/new-user-modal/n
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ResponseInterceptor } from '../app/interceptors/response-interceptor';
+import { ErrorHandlerInterceptor } from './interceptors/ErrorHandlerInterceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +48,7 @@ import { ResponseInterceptor } from '../app/interceptors/response-interceptor';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ResponseInterceptor,
+      useClass: ErrorHandlerInterceptor,
       multi: true,
     },
   ],

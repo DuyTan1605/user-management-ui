@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { User } from '../../types/user';
+import { User } from '../../entities/User';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/userService/user.service';
+import { UserService } from '../../services/user.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DateTimeFormater } from '../../utils/datetime-formatter';
 import {
@@ -12,12 +12,13 @@ import {
 } from '@angular/forms';
 import { Validator } from '../../utils/validators';
 import { ToastrService } from 'ngx-toastr';
+import { Gender } from '../../entities/Gender';
+
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
-
 export class UserComponent implements OnInit {
   @Input() user?: User;
   model?: NgbDateStruct;
@@ -38,33 +39,34 @@ export class UserComponent implements OnInit {
   getUser(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.userService.getUser(id).subscribe((user) => {
-      const myDate = new Date(user.birthday.toString());
       this.user = user;
-
-      this.editUser = this.formBuilder.group({
-        username: new FormControl(user.userName, [
-          Validators.required,
-          this.validatorService.validateUserName,
-        ]),
-        name: new FormControl(user.name, [
-          Validators.required,
-          this.validatorService.validateName,
-        ]),
-        birthday: new FormControl(
-          {
-            year: myDate.getFullYear(),
-            month: myDate.getMonth() + 1,
-            day: myDate.getDate(),
-          },
-          [Validators.required]
-        ),
-        gender: new FormControl(user.gender, [Validators.required]),
-      });
+      if (user) {
+        const myDate = new Date(user.birthday.toString());
+        this.editUser = this.formBuilder.group({
+          username: new FormControl(user.userName, [
+            Validators.required,
+            this.validatorService.validateUserName,
+          ]),
+          name: new FormControl(user.name, [
+            Validators.required,
+            this.validatorService.validateName,
+          ]),
+          birthday: new FormControl(
+            {
+              year: myDate.getFullYear(),
+              month: myDate.getMonth() + 1,
+              day: myDate.getDate(),
+            },
+            [Validators.required]
+          ),
+          gender: new FormControl(user.gender, [Validators.required]),
+        });
+      }
     });
   }
 
   formatDate(date: String): String {
-    return this.dateTimeService.formatToMyDate(date);
+    return this.dateTimeService.formatToDisplayDate(date);
   }
 
   backToUsers() {
@@ -75,7 +77,10 @@ export class UserComponent implements OnInit {
     this.userService
       .updateUser({
         ...this.editUser.value,
-        gender: this.editUser.value.gender == 'Male' ? 0 : 1,
+        gender:
+          this.editUser.value.gender == Gender[Gender.Male]
+            ? Gender.Male
+            : Gender.Female,
         id: Number(this.route.snapshot.paramMap.get('id')),
         birthday: this.dateTimeService.formatToApiDate(
           this.editUser.value.birthday

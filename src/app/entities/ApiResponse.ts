@@ -1,4 +1,4 @@
-export interface apiResponse {
+export interface ApiResponse {
   code: number;
   data: any;
 }

@@ -6,7 +6,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./delete-modal.component.css'],
 })
 export class DeleteModalComponent implements OnInit {
-  @Input() userId?: string;
+  @Input() userId?: number;
   @Output() deleteUser = new EventEmitter();
   constructor() {}
 

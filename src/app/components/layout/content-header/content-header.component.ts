@@ -6,6 +6,7 @@ import { Router, Event, NavigationEnd } from '@angular/router';
   templateUrl: './content-header.component.html',
   styleUrls: ['./content-header.component.css'],
 })
+
 export class ContentHeaderComponent implements OnInit {
   title?: string;
   constructor(private router: Router) {}

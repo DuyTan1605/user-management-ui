@@ -59,7 +59,7 @@
               <i class="fas fa-trash text-danger"></i>
             </button>
             <app-delete-modal
-              userId="{{ user.id }}"
+              [userId]="user.id"
               (deleteUser)="deleteUserAction(user.id)"
             ></app-delete-modal>
           </td>

@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpParams,
-  HTTP_INTERCEPTORS,
-} from '@angular/common/http';
-import { User } from '../../types/user';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment.dev';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { User } from '../entities/User';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment.dev';
 import { ToastrService } from 'ngx-toastr';
-import { ErrorHandler } from '../../utils/error-handlers';
-import { apiResponse } from '../../types/apiResponse';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,15 +19,11 @@ export class UserService {
   private usersUrl = '/users';
   private userUrl = '/user';
 
-  constructor(
-    private http: HttpClient,
-    private toastr: ToastrService,
-    private ErrorHandler: ErrorHandler
-  ) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<apiResponse>(this.apiUrl + this.usersUrl).pipe(
-      map((response) => {
+    return this.http.get<User[]>(this.apiUrl + this.usersUrl).pipe(
+      map((response: any) => {
         return response.data;
       })
     );
@@ -42,38 +32,31 @@ export class UserService {
   getUser(id: number): Observable<User> {
     const params = new HttpParams().set('id', id);
     return this.http
-      .get<apiResponse>(this.apiUrl + this.userUrl, {
+      .get<User>(this.apiUrl + this.userUrl, {
         params,
       })
       .pipe(
-        map((response) => {
+        map((response: any) => {
           return response.data;
         })
       );
   }
 
-  deleteUser(id: number): Observable<number> {
+  deleteUser(id: number): Observable<any> {
     const params = new HttpParams().set('id', id);
     return this.http
-      .delete<apiResponse>(this.apiUrl + this.userUrl, {
+      .delete<any>(this.apiUrl + this.userUrl, {
         params,
       })
       .pipe(
         map((response) => {
-          if (response.code != 0) {
-            this.toastr.error(
-              'Delete user fail',
-              this.ErrorHandler.getErrorMsg(response)
-            );
-            return 0;
-          }
           this.toastr.success('Delele user success!');
           return 1;
         })
       );
   }
 
-  createUser(newUserData: any): Observable<number> {
+  createUser(newUserData: any): Observable<any> {
     const body = new HttpParams()
       .set('password', newUserData.password)
       .set('name', newUserData.name)
@@ -82,25 +65,18 @@ export class UserService {
       .set('gender', newUserData.gender);
 
     return this.http
-      .post<apiResponse>(this.apiUrl + this.userUrl, body, {
+      .post<any>(this.apiUrl + this.userUrl, body, {
         headers: this.headers,
       })
       .pipe(
         map((response) => {
-          if (response.code != 0) {
-            this.toastr.error(
-              'Create user fail',
-              this.ErrorHandler.getErrorMsg(response)
-            );
-            return 0;
-          }
           this.toastr.success('Create user success!');
           return 1;
         })
       );
   }
 
-  updateUser(newUserData: any): Observable<number> {
+  updateUser(newUserData: any): Observable<any> {
     const params = new HttpParams()
       .set('id', newUserData.id)
       .set('name', newUserData.name)
@@ -109,18 +85,11 @@ export class UserService {
       .set('gender', newUserData.gender);
 
     return this.http
-      .put<apiResponse>(this.apiUrl + this.userUrl, params, {
+      .put<any>(this.apiUrl + this.userUrl, params, {
         headers: this.headers,
       })
       .pipe(
         map((response) => {
-          if (response.code != 0) {
-            this.toastr.error(
-              'Update user fail',
-              this.ErrorHandler.getErrorMsg(response)
-            );
-            return 0;
-          }
           this.toastr.success('Update user success!');
           return 1;
         })

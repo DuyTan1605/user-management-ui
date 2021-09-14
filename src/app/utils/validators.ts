@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-
 class Validator {
   validateName(control: AbstractControl): { [key: string]: any } | null {
     const regrex = /^[A-Za-z]{5,29}$/;

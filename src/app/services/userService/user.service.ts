@@ -32,35 +32,35 @@ export class UserService {
   ) {}
 
   getUsers(): Observable<User[]> {
-    return this.http
-      .get<any>(this.apiUrl + this.usersUrl, { observe: 'response' })
-      .pipe(
-        map((response) => {
-          return response.body.data;
-        })
-      );
+    return this.http.get<apiResponse>(this.apiUrl + this.usersUrl).pipe(
+      map((response) => {
+        return response.data;
+      })
+    );
   }
 
   getUser(id: number): Observable<User> {
+    const params = new HttpParams().set('id', id);
     return this.http
-      .get<any>(this.apiUrl + this.userUrl + '?id=' + id, {
-        observe: 'response',
+      .get<apiResponse>(this.apiUrl + this.userUrl, {
+        params,
       })
       .pipe(
         map((response) => {
-          return response.body.data;
+          return response.data;
         })
       );
   }
 
-  deleteUser(id: number): Observable<any> {
+  deleteUser(id: number): Observable<number> {
+    const params = new HttpParams().set('id', id);
     return this.http
-      .delete<any>(this.apiUrl + this.userUrl + '?id=' + id, {
-        observe: 'response',
+      .delete<apiResponse>(this.apiUrl + this.userUrl, {
+        params,
       })
       .pipe(
         map((response) => {
-          if (response.body.code != 0) {
+          if (response.code != 0) {
             this.toastr.error(
               'Delete user fail',
               this.ErrorHandler.getErrorMsg(response)
@@ -73,7 +73,7 @@ export class UserService {
       );
   }
 
-  createUser(newUserData: any): Observable<any> {
+  createUser(newUserData: any): Observable<number> {
     const body = new HttpParams()
       .set('password', newUserData.password)
       .set('name', newUserData.name)
@@ -82,13 +82,12 @@ export class UserService {
       .set('gender', newUserData.gender);
 
     return this.http
-      .post<any>(this.apiUrl + this.userUrl, body, {
+      .post<apiResponse>(this.apiUrl + this.userUrl, body, {
         headers: this.headers,
-        observe: 'response',
       })
       .pipe(
         map((response) => {
-          if (response.body.code != 0) {
+          if (response.code != 0) {
             this.toastr.error(
               'Create user fail',
               this.ErrorHandler.getErrorMsg(response)
@@ -101,7 +100,7 @@ export class UserService {
       );
   }
 
-  updateUser(newUserData: any): Observable<any> {
+  updateUser(newUserData: any): Observable<number> {
     const params = new HttpParams()
       .set('id', newUserData.id)
       .set('name', newUserData.name)
@@ -110,13 +109,12 @@ export class UserService {
       .set('gender', newUserData.gender);
 
     return this.http
-      .put<any>(this.apiUrl + this.userUrl, params, {
+      .put<apiResponse>(this.apiUrl + this.userUrl, params, {
         headers: this.headers,
-        observe: 'response',
       })
       .pipe(
         map((response) => {
-          if (response.body.code != 0) {
+          if (response.code != 0) {
             this.toastr.error(
               'Update user fail',
               this.ErrorHandler.getErrorMsg(response)
@@ -128,17 +126,4 @@ export class UserService {
         })
       );
   }
-
-  // private handleError<T>(operation = 'operation', result?: T) {
-  //   return (error: any): Observable<T> => {
-  //     // TODO: send the error to remote logging infrastructure
-  //     console.error(error); // log to console instead
-  //     this.toastr.error(this.ErrorHandler.getErrorMsg(error));
-  //     // TODO: better job of transforming error for user consumption
-  //     console.log(`${operation} failed: ${error.message}`);
-
-  //     // Let the app keep running by returning an empty result.
-  //     return of(result as T);
-  //   };
-  // }
 }
